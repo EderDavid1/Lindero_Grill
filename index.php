@@ -33,7 +33,7 @@ if (isset($_POST["enviar"]) and $_POST["enviar"] == "si") {
   <meta name="msapplication-TileColor" content="#da532c">
   <meta name="theme-color" content="#ffffff">
 
-  <title>GITSE-Municipalidad de Chiclayo</title>
+  <title>Lindero Grill-PDVLG</title>
 </head>
 
 
@@ -43,7 +43,7 @@ if (isset($_POST["enviar"]) and $_POST["enviar"] == "si") {
     <!-- /.login-logo -->
     <div class="card" style="    box-shadow: -1px 13px 16px 2px #623b28;">
       <div class="card-header text-center">
-        <img src="public/img/logo2.png" width="190">
+        <img src="public/img/logo4.png" width="190">
       </div>
       <div class="card-body login-card-body">
        <h1 style="text-align: center;

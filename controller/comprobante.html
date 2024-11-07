@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Comprobante de Ingreso</title>
+    <style>
+        @page {
+            margin: 0;
+            /* Margen de la página PDF */
+        }
+
+        body {
+            margin: 0;
+            /* Margen del contenido */
+            padding: 0;
+        }
+    </style>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 5px;
+            /* Tamaño de letra ajustado */
+            margin: 0;
+            /* Sin márgenes */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            /* Espaciado entre el encabezado y la tabla */
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            /* Borde de las celdas */
+
+        }
+
+        h2,
+        h3 {
+            margin: 0;
+            /* Sin márgenes */
+        }
+
+        .total {
+            text-align: right;
+            /* Alinear a la derecha */
+            margin-top: 10px;
+            /* Espaciado superior */
+        }
+
+        .header p {
+            margin: 0;
+        }
+
+        .cliente p {
+            font-size: 4px;
+        }
+
+        .container_tipo_doc {
+            position: relative;
+            left: 10px;
+            width: 100%;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+
+        .card_tipo_doc {
+            text-align: center;
+            width: 100px;
+            border: 1px solid #ff7500;
+            border-radius: 5px;
+
+            padding-top: 5px;
+            height: 20px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header" style="text-align: center; margin-top: 10px;">
+            <img src="http://localhost/LinderoGrill/public/img/logo4.png" alt="Logo" style="width: 50%; height: 45px;">
+            <h3>Lindero Grill</h3>
+          <!--   <p><strong>RUC: 10751434095</strong></p> -->
+            <p>Cuatro de Noviembre, Chiclayo, Lambayeque, Peru</p>
+            <p>Cel: +51 975-250-850</p>
+        </div>
+
+        <div class="container_tipo_doc">
+            <div class="card_tipo_doc">
+                <h4 style="margin: 0px;">{{tipo_comprobante}}</h4>
+                <p style="font-size: 7px; margin:0">Nº: {{tipo_comprobante_prefijo}}-{{cobro_id}}</p>
+            </div>
+        </div>
+
+        <div class="cliente" style="margin-left: 10px; margin-bottom: 5px;">
+            <table style="width: 100%; border-collapse: collapse; border: none; font-size: 4px; margin-top: 0;">
+                <tr>
+                    <td style="border: none;"><strong>FEC. EMISION:</strong></td>
+                    <td style="border: none;">{{fecha}}</td>
+                </tr>
+                <tr>
+                    <td style="border: none;"><strong>{{nombre_razon_label}}:</strong></td>
+                    <td style="border: none;">{{razon_social}}</td>
+                </tr>
+                <tr>
+                    <td style="border: none;"><strong>{{dni_ruc_label}}:</strong></td>
+                    <td style="border: none;">{{dni_ruc}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <style>
+        table tr td {
+            border: 0.5px solid #ff7500;
+
+        }
+
+        table tr th {
+            border: 0.89px solid #ff7500;
+            background-color: #ffd2aa;
+        }
+    </style>
+    <table class="tableproductos"
+        style="width: 100%; border-collapse: collapse; font-size: 4px; margin-top: 0; padding-right: 3px;padding-left: 3px;">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>PRECIO</th>
+                <th>CANT</th>
+                <th>SUB TOTAL</th>
+            </tr>
+        </thead>
+        <tbody style="text-align: center;">
+            {{detalles}}
+        </tbody>
+    </table>
+
+    <style>
+        .usu_det p {
+            margin: 2px;
+        }
+    </style>
+    <div class="total" style="padding-right:  5px;">
+        <div class="total_lbl" style="margin-bottom: 15px;">
+            <p>OP. GRAVADA: S/. {{sub_total}}</p>
+            <p>(18 %) IGV: S/. {{igv}}</p>
+            <h3>TOTAL: S/. {{total}}</h3>
+        </div>
+        
+
+    </div>
+    <div class="fin" style="width: 100%;">
+        <!-- Mensaje de revisar la información -->
+        <p style="text-align: center; padding-right: 5px;padding-left: 5px;">Por favor, revise detenidamente la
+            información antes de salir del establecimiento.</p>
+
+        <p style="text-align: center;"> <strong>Ha sido un placer atenderle.</strong></p>
+    </div>
+</body>
+
+</html>

@@ -3,7 +3,7 @@ require_once("../../config/conexion.php");
 
 
 if (isset($_SESSION["usua_id_pdvlg"])) {
-    ?>
+?>
     <!DOCTYPE html>
     <html lang="es">
 
@@ -95,8 +95,7 @@ if (isset($_SESSION["usua_id_pdvlg"])) {
 
 
         <script>
-            $(document).ready(function () {
-                // Inicializa Select2
+            $(document).ready(function() {
                 $('.select2').select2();
 
                 // Cargar categorías
@@ -104,98 +103,83 @@ if (isset($_SESSION["usua_id_pdvlg"])) {
                     url: '../../controller/producto.php?op=get_categorias',
                     method: 'GET',
                     dataType: 'json',
-                    success: function (response) {
-                        $.each(response, function (index, item) {
+                    success: function(response) {
+                        $.each(response, function(index, item) {
                             $('#categoriaSelect').append(new Option(item.cate_nom, item.cate_prod_id));
+                            $('#cate_producto_id').append(new Option(item.cate_nom, item.cate_prod_id));
                         });
                     },
-                    error: function () {
+                    error: function() {
                         console.error('Error al cargar las categorías.');
                     }
                 });
 
-                // Inicializa DataTables
                 var table = $('#productosTable').DataTable({
                     "ajax": {
                         "url": "../../controller/producto.php?op=listar_productos",
                         "type": "POST",
-                        "data": function (d) {
-                            d.categoria_id = $('#categoriaSelect').val(); // Pasar el ID de categoría al servidor
+                        "data": function(d) {
+                            d.categoria_id = $('#categoriaSelect').val();
                         }
                     },
                     "pageLength": 8,
                     "lengthChange": false,
-                    "columns": [
-                        { "data": "producto_id" },
-                        { "data": "producto_nom" },
-                        { "data": "producto_desc" },
-                        { "data": "producto_precio" },
+                    "columns": [{
+                            "data": "producto_id"
+                        },
+                        {
+                            "data": "producto_nom"
+                        },
+                        {
+                            "data": "producto_desc"
+                        },
+                        {
+                            "data": "producto_precio"
+                        },
                         {
                             "data": "plato_est",
-                            "render": function (data) {
+                            "render": function(data) {
                                 return data === 1 ? 'Activo' : 'Inactivo';
                             }
                         },
                         {
                             "data": null,
-                            "render": function (data, type, row) {
+                            "render": function(data, type, row) {
                                 return `<button class='btn btn-warning btn-sm' title='Editar' onclick='editar(${row.producto_id})'><i class='fa fa-edit'></i></button>
-                                                <button class='btn btn-danger btn-sm' title='Eliminar' onclick='eliminar(${row.producto_id})'><i class='fa fa-trash'></i></button>`;
+                            <button class='btn btn-danger btn-sm' title='Eliminar' onclick='eliminar(${row.producto_id})'><i class='fa fa-trash'></i></button>`;
                             }
                         }
-                    ],
-                    "language": {
-                        "lengthMenu": "Mostrar _MENU_ registros",
-                        "zeroRecords": "No se encontraron resultados",
-                        "info": "Mostrando página _PAGE_ de _PAGES_",
-                        "infoEmpty": "No hay registros disponibles",
-                        "infoFiltered": "(filtrado de _MAX_ total registros)",
-                        "search": "Buscar:",
-
-                        "paginate": {
-                            "first": "Primero",
-                            "last": "Último",
-                            "next": "Siguiente",
-                            "previous": "Anterior"
-                        }
-                    }
+                    ]
                 });
 
-                // Manejo de búsqueda personalizada
-                $('#searchInput').on('keyup', function () {
+                // Búsqueda personalizada
+                $('#searchInput').on('keyup', function() {
                     table.search(this.value).draw();
                 });
 
-                // Manejo de filtrado por categoría
-                $('#categoriaSelect').on('change', function () {
-                    table.ajax.reload(); // Recarga la tabla al cambiar la categoría
+                $('#categoriaSelect').on('change', function() {
+                    table.ajax.reload();
                 });
 
-                // Limpiar los campos del modal
-                $("#productoModal").on("hidden.bs.modal", function () {
-                    clearModalInputs();
-                });
-
-                // Manejo del formulario
-                $("#productoForm").submit(function (event) {
+                $("#productoForm").submit(function(event) {
                     event.preventDefault();
                     let action = $('#producto_id').val() === '' ? 'guardar_producto' : 'guardar_producto';
                     $.ajax({
                         url: '../../controller/producto.php?op=' + action,
                         method: 'POST',
                         data: $(this).serialize(),
-                        success: function (response) {
-                            toastr.success(response.message); // Notificación usando Toastr
-                            table.ajax.reload(); // Recarga los datos de la tabla
+                        dataType: 'json',
+                        success: function(response) {
+                            toastr.success(response.message);
+                            table.ajax.reload();
                             $("#productoModal").modal("hide");
                         },
-                        error: function () {
+                        error: function() {
                             toastr.error("Error al guardar el producto.");
                         }
                     });
                 });
             });
-
             function nuevo() {
                 $("#productoModal").modal("show");
                 clearModalInputs();
@@ -208,14 +192,15 @@ if (isset($_SESSION["usua_id_pdvlg"])) {
                 $('#producto_precio').val('');
                 $('#cate_producto_id').val('').trigger('change');
             }
-
             function editar(id) {
                 $.ajax({
                     url: '../../controller/producto.php?op=obtener_producto',
                     method: 'GET',
-                    data: { id: id },
+                    data: {
+                        id: id
+                    },
                     dataType: 'json',
-                    success: function (data) {
+                    success: function(data) {
                         $('#producto_id').val(data.producto_id);
                         $('#producto_nom').val(data.producto_nom);
                         $('#producto_desc').val(data.producto_desc);
@@ -237,9 +222,11 @@ if (isset($_SESSION["usua_id_pdvlg"])) {
                     confirmButtonText: 'Sí, eliminar!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        $.post('../../controller/producto.php?op=eliminar_producto', { producto_id: id }, function (response) {
-                            toastr.success(response.message); // Notificación usando Toastr
-                            $('#productosTable').DataTable().ajax.reload(); // Recarga los datos de la tabla
+                        $.post('../../controller/producto.php?op=eliminar_producto', {
+                            producto_id: id
+                        }, function(response) {
+                            toastr.success(response.message);
+                            $('#productosTable').DataTable().ajax.reload();
                         }, 'json');
                     }
                 });
@@ -248,7 +235,7 @@ if (isset($_SESSION["usua_id_pdvlg"])) {
     </body>
 
     </html>
-    <?php
+<?php
 } else {
     header("Location: " . Conectar::ruta() . "index.php");
 }

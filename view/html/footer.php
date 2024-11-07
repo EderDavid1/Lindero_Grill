@@ -5,8 +5,8 @@
     <p >
     Desarrollado por 
     <a href="https://digitech-corp.pe" target="_blank" >
-      <span  class="digitech">Eder Pacheco</span>
-      <span  class="corp">Chiclayo</span>
+      <span  class=" ">Eder Pacheco</span>
+      <span  class=" ">Chiclayo</span>
     </a>
   </p>
   </footer>

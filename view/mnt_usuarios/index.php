@@ -2,89 +2,234 @@
 /* Llamamos al archivo de conexion.php */
 require_once("../../config/conexion.php");
 if (isset($_SESSION["usua_id_pdvlg"])) {
-  ?>
-  <!DOCTYPE html>
-  <html lang="es">
+?>
+    <!DOCTYPE html>
+    <html lang="es">
 
-  <head>
-    <?php require_once("../html/mainHead.php"); ?>
-    <title>Gestión de Personal</title>
-  </head>
+    <head>
+        <?php require_once("../html/mainHead.php"); ?>
+        <title>Crear Usuario</title>
+    </head>
 
-  <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
-    <div class="wrapper">
-      <?php require_once("../html/menu.php"); ?>
-      <?php require_once("../html/mainProfile.php"); ?>
+    <body class="hold-transition sidebar-mini layout-fixed">
+        <div class="wrapper">
+            <?php require_once("../html/menu.php"); ?>
+            <?php require_once("../html/mainProfile.php"); ?>
+            <div class="content-wrapper">
+                <section class="content">
+                    <div class="container-fluid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Crear Usuario</h3>
+                                <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#modalPermiso">Registrar Permiso</button>
+                            </div>
+                            <div class="card-body">
 
-      <div class="content-wrapper">
-        <!-- Main content -->
-        <section class="content">
-          <div class="container-fluid">
-            <!-- Data Table -->
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Gestión de Usuarios</h3>
-                <!-- Button to Open Modal -->
-                <button type="button" class="btn btn-primary float-right" onclick="nuevoUsuario()">
-                  <i class="fa fa-plus"></i> Agregar Usuario
-                </button>
-              </div>
-              <div class="card-body">
-                <table id="usuarioTable" class="table table-bordered table-striped">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Nombre</th>
-                      <th>Apellido Paterno</th>
-                      <th>Apellido Materno</th>
-                      <th>Documento</th>
-                      <th>Foto</th>
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-              </div>
+
+                                <h3 class="card-title mt-4">Usuarios Activos</h3>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="usuariosTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Nombre de Usuario</th>
+                                                <th>Personal ID</th>
+                                                <th>Rol ID</th>
+                                                <th>Sistema ID</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="usuariosContainer"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
 
-            <!-- Vista en Tarjetas -->
-            <div class="row" id="UsuarioContainer">
-              <!-- Aquí se insertarán las tarjetas de los usuarios desde el JS -->
+            <!-- Modal para registrar permisos -->
+            <div class="modal fade" id="modalPermiso" tabindex="-1" aria-labelledby="modalPermisoLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalPermisoLabel">Registrar Permiso</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="formRegistrarPermiso">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="pers_perm_id">Personal</label>
+                                    <select id="pers_perm_id" class="form-control" name="pers_perm_id" required>
+
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="rol_perm_id">Rol</label>
+                                    <select id="rol_perm_id" class="form-control" name="rol_perm_id" required>
+                                        <!-- Aquí se llenarán las opciones de roles -->
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="sist_perm_id">Sistema</label>
+                                    <select id="sist_perm_id" class="form-control" name="sist_perm_id" required>
+                                        <!-- Aquí se llenarán las opciones de sistemas -->
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="usuario_perm">Nombre de Usuario</label>
+                                    <input type="text" class="form-control" id="usuario_perm" name="usuario_perm" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password_perm">Contraseña</label>
+                                    <input type="password" class="form-control" id="password_perm" name="password_perm" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                <button type="submit" class="btn btn-primary">Registrar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-          </div>
-        </section>
-        <!-- /.content -->
-      </div>
 
-      <?php require_once("../html/footer.php"); ?>
-      <!-- Control Sidebar -->
-      <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-      </aside>
-    </div>
+            <?php require_once("../html/footer.php"); ?>
+        </div>
+        <?php require_once("../html/mainjs.php"); ?>
+        <script>
+            // Función para listar roles y sistemas
+            function listarRolesYSistemas() {
+                $.ajax({
+                    url: "../../controller/permiso.php?op=listar_roles",
+                    type: "GET",
+                    success: function(data) {
+                        let roles = JSON.parse(data);
+                        roles.forEach(role => {
+                            $("#rol_id, #rol_perm_id").append(`<option value="${role.rol_id}">${role.rol_nombre}</option>`);
+                        });
+                    }
+                });
 
-    <!-- Modal para crear/editar usuario -->
-    <?php require_once("modal_usuario.php"); ?>
-    <?php require_once("../html/mainjs.php"); ?>
-    <script type="text/javascript" src="usuarios.js"></script>
-    <script>
-      function nuevoUsuario() {
-        // Resetea el formulario y abre el modal
-        $("#formUsuario")[0].reset();
-        $("#pers_id").val("");
-        $("#modal_usuario").modal("show");
-      }
+                $.ajax({
+                    url: "../../controller/permiso.php?op=listar_sistemas",
+                    type: "GET",
+                    success: function(data) {
+                        let sistemas = JSON.parse(data);
+                        sistemas.forEach(sistema => {
+                            $("#sist_id, #sist_perm_id").append(`<option value="${sistema.sist_id}">${sistema.sist_nom}</option>`);
+                        });
+                    }
+                });
+            }
 
-      document.addEventListener('DOMContentLoaded', function () {
-        // Inicializar las funciones cuando cargue la página
-        listarUsuarios();
-      });
-    </script>
-  </body>
+            // Función para crear un nuevo usuario
+            $("#formCrearUsuario").on("submit", function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../../controller/permiso.php?op=crear_usuario",
+                    type: "POST",
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        toastr.success(response); // Mensaje de éxito
+                        $("#formCrearUsuario")[0].reset(); // Resetear el formulario
+                        listarUsuarios(); // Recargar la lista de usuarios
+                    },
+                    error: function() {
+                        toastr.error("Error al crear el usuario.");
+                    }
+                });
+            });
 
-  </html>
-  <?php
+            // Función para registrar permisos
+            $("#formRegistrarPermiso").on("submit", function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "../../controller/permiso.php?op=registrar_permiso",
+                    type: "POST",
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        toastr.success(response); // Mensaje de éxito
+                        $("#formRegistrarPermiso")[0].reset(); // Resetear el formulario
+                        listarUsuarios(); // Recargar la lista de usuarios
+                        $('#modalPermiso').modal('hide'); // Cerrar el modal
+                    },
+                    error: function() {
+                        toastr.error("Error al registrar el permiso.");
+                    }
+                });
+            });
+
+            // Función para listar usuarios activos
+            function listarUsuarios() {
+                $.ajax({
+                    url: "../../controller/permiso.php?op=listar_usuarios",
+                    type: "GET",
+                    success: function(response) {
+                        $("#usuariosContainer").html(response); // Cargar los usuarios en la tabla
+                    },
+                    error: function() {
+                        toastr.error("Error al cargar los usuarios.");
+                    }
+                });
+            }
+
+            function eliminarUsuario(perm_id) {
+                Swal.fire({
+                    title: "¿Está seguro de que desea eliminar este usuario?",
+                    text: "Esta acción no se puede deshacer",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Sí, eliminar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "../../controller/usuario.php?op=eliminar_usuario",
+                            type: "POST",
+                            data: {
+                                perm_id: perm_id
+                            },
+                            success: function(response) {
+                                toastr.success("Usuario eliminado correctamente.");
+                                listarUsuarios(); // Recargar la lista de usuarios
+                            },
+                            error: function() {
+                                toastr.error("Error al eliminar el usuario.");
+                            }
+                        });
+                    }
+                });
+            }
+
+
+            $.ajax({
+                url: "../../controller/permiso.php?op=listar_personal",
+                type: "GET",
+                success: function(data) {
+                    let personal = JSON.parse(data);
+                    personal.forEach(persona => {
+                        $("#pers_perm_id").append(`<option value="${persona.pers_id}">${persona.pers_nombre}</option>`);
+                    });
+                }
+            });
+            $(document).ready(function() {
+                listarRolesYSistemas(); // Cargar roles y sistemas al inicio
+                listarUsuarios(); // Cargar usuarios al inicio
+            });
+        </script>
+    </body>
+
+    </html>
+<?php
 } else {
-  header("Location: " . Conectar::ruta() . "index.php");
+    header("Location: " . Conectar::ruta() . "index.php");
 }
 ?>

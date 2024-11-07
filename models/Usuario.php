@@ -53,11 +53,11 @@ class Usuario extends Conectar
 
             switch ($_SESSION["rol_id_pdvlg"]) {
                 case 1:  // Rol orientador
-                    header("Location: " . Conectar::ruta() . "view/registrar_pedido/");
+                    header("Location: " . Conectar::ruta() . "view/mnt_pedidos/");
                     exit();
                 // Añadir más casos según los roles
                 default:
-                    header("Location:" . Conectar::ruta() . "view/registrar_pedido/");
+                    header("Location:" . Conectar::ruta() . "view/mnt_pedidos/");
                     exit();
             }
         }
@@ -92,7 +92,12 @@ class Usuario extends Conectar
         $stmt->execute([$pers_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
+    public function eliminar_usuario($perm_id) {
+        $sql = "UPDATE sc_seguridad.tb_permiso SET perm_est = 0 WHERE perm_id = ?";
+        $stmt = Conectar::conexion()->prepare($sql);
+        $stmt->execute([$perm_id]);
+      }
+      
     // Método para registrar o actualizar un usuario
     public function registrar_usuario($pers_id, $pers_nombre, $pers_apelpat, $pers_apelmat, $pers_foto, $pers_doc)
     {

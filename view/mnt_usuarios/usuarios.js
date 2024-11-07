@@ -92,6 +92,22 @@ function guardarUsuario() {
     listarUsuarios();
   });
 }
+function eliminarUsuario(pers_id) {
+  if (confirm("¿Está seguro de que desea eliminar este usuario?")) {
+    $.ajax({
+      url: "../../controller/usuario.php?op=eliminar_usuario",
+      type: "POST",
+      data: { pers_id: pers_id },
+      success: function(response) {
+        toastr.success("Usuario eliminado correctamente.");
+        listarUsuarios(); // Recargar la lista de usuarios
+      },
+      error: function() {
+        toastr.error("Error al eliminar el usuario.");
+      }
+    });
+  }
+}
 
 // Inicializar roles y sistemas al cargar la página
 document.addEventListener('DOMContentLoaded', function() {

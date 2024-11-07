@@ -6,7 +6,7 @@ $mesa = new Mesa();
 
 switch ($_GET["op"]) {
 
-    // Obtener todas las mesas
+        // Obtener todas las mesas
     case "listar_mesas":
         $datos = $mesa->get_mesas();
         if (is_array($datos) == true and count($datos) > 0) {
@@ -51,8 +51,11 @@ switch ($_GET["op"]) {
             echo $html;
         }
         break;
-
-    // Registrar una nueva mesa
+    case "listar_mesas_combo":
+        $mesas = $mesa->get_mesas();
+        echo json_encode($mesas);
+        break;
+        // Registrar una nueva mesa
     case "insertar_mesa":
         if (empty($_POST["mesa_id"])) {
             $mesa->insert_mesa($_POST["mesa_nmr"], $_POST["mesa_est"], $_POST["mesa_sillas_num"]);
@@ -63,13 +66,13 @@ switch ($_GET["op"]) {
         }
         break;
 
-    // Obtener los datos de una mesa específica
+        // Obtener los datos de una mesa específica
     case "ver_mesa":
         $datos = $mesa->ver_mesa($_POST["mesa_id"]);
         echo json_encode($datos);
         break;
 
-    // Eliminar (cambiar estado a 0) una mesa
+        // Eliminar (cambiar estado a 0) una mesa
     case "eliminar_mesa":
         $mesa->update_mesa_estado($_POST["mesa_id"], 0);  // Cambiar el estado a 0 (inactivo)
         echo "Mesa eliminada correctamente";
